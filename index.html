@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Futur Simple Run</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root {
+  --bg: #f3f0ea; --card: #fffdf8; --ink: #1f2440; --muted: #636780; --line: #ddd6c8;
+  --accent: #2B4FB3; --red: #C8102E; --good: #2f7a4f; --bad: #b3352a; --soft: #ece7dc;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root {
+  --bg: #12141f; --card: #1b1e2c; --ink: #e8e9f2; --muted: #9a9db3; --line: #2e3246;
+  --accent: #7f9bf0; --red: #f06a7c; --good: #63c08a; --bad: #f07a6c; --soft: #242839; color-scheme: dark } }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--ink); }
+body { font-family: var(--body); font-size: 16px; line-height: 1.5; padding: 0 16px; }
+.wrap { max-width: 580px; margin: 0 auto; padding: 28px 0 48px; display: flex; flex-direction: column; gap: 20px; }
+.flag { height: 6px; border-radius: 3px; background: linear-gradient(90deg,#2B4FB3 0 33.3%,#F6F2EA 33.3% 66.6%,#C8102E 66.6%); }
+header { display: flex; justify-content: space-between; align-items: end; gap: 12px; flex-wrap: wrap; }
+h1 { font-family: var(--display); font-weight: 800; font-size: 2rem; margin: 0; letter-spacing: -0.02em; line-height: 1; }
+h1 span { color: var(--accent); }
+.sub { color: var(--muted); font-size: .9rem; margin: 6px 0 0; max-width: 40ch; }
+.stats { display: flex; gap: 18px; font-family: var(--mono); font-size: .75rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.stats b { display: block; font-size: 1.25rem; color: var(--ink); font-weight: 500; }
+.bar { height: 10px; background: var(--soft); border-radius: 5px; overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .3s; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 26px 24px 22px; display: flex; flex-direction: column; gap: 16px; }
+.prompt-label { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0; }
+.prompt { font-family: var(--display); font-size: 1.9rem; font-weight: 500; margin: 0; line-height: 1.2; }
+.prompt em { font-style: normal; color: var(--accent); }
+.eng { color: var(--muted); margin: -8px 0 0; }
+form { display: flex; gap: 10px; align-items: center; }
+.pron { font-family: var(--mono); font-size: 1.1rem; white-space: nowrap; }
+input { flex: 1; min-width: 0; font: 500 1.15rem var(--mono); padding: 11px 13px; border: 2px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); }
+input:focus { outline: none; border-color: var(--accent); }
+button { font: 700 1rem var(--body); padding: 11px 18px; border-radius: 10px; border: 0; background: var(--accent); color: #fff; cursor: pointer; }
+button.ghost { background: transparent; color: var(--muted); border: 1px solid var(--line); font-weight: 400; padding: 6px 12px; font-size: .85rem; }
+.keys { display: flex; gap: 6px; flex-wrap: wrap; }
+.keys button { background: var(--soft); color: var(--ink); padding: 4px 10px; font: 500 .95rem var(--mono); }
+.fb { min-height: 3em; margin: 0; }
+.fb.good { color: var(--good); }
+.fb.bad { color: var(--bad); }
+.fb b { font-family: var(--mono); }
+.words { display: flex; flex-wrap: wrap; gap: 6px; }
+.words span { font: 500 .78rem var(--mono); padding: 3px 9px; border-radius: 99px; border: 1px solid var(--line); color: var(--muted); }
+.words span.done { background: var(--good); border-color: var(--good); color: #fff; }
+.words span.miss { border-color: var(--bad); color: var(--bad); }
+h2 { font-family: var(--display); font-size: 1rem; margin: 0 0 8px; }
+.win { text-align: center; }
+.win .prompt { font-size: 2.2rem; }
+table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+td { padding: 4px 6px; border-bottom: 1px solid var(--line); }
+td:nth-child(2) { font-family: var(--mono); color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="flag"></div>
+  <header>
+    <div>
+      <h1>Futur <span>Simple</span> Run</h1>
+      <p class="sub">Write the future tense. Get every verb right in a row to finish. One mistake and the run starts again.</p>
+    </div>
+    <div class="stats">
+      <div><b id="streak">0</b>in a row</div>
+      <div><b id="best">0</b>best</div>
+      <div><b id="runs">1</b>run</div>
+    </div>
+  </header>
+  <div class="bar"><i id="bar"></i></div>
+
+  <section class="card" id="quiz">
+    <p class="prompt-label">Put into the future</p>
+    <p class="prompt" id="prompt"></p>
+    <p class="eng" id="eng"></p>
+    <form id="form" autocomplete="off">
+      <span class="pron" id="pron"></span>
+      <input id="answer" autocapitalize="off" spellcheck="false" aria-label="Your answer">
+      <button id="go">Check</button>
+    </form>
+    <div class="keys"><button type="button">é</button><button type="button">è</button><button type="button">ê</button><button type="button">ç</button></div>
+    <p class="fb" id="fb"></p>
+  </section>
+
+  <section class="card win" id="win" hidden>
+    <p class="prompt">Bravo ! 🎉</p>
+    <p id="winText"></p>
+    <table id="stemTable"></table>
+    <button id="again">Play again</button>
+  </section>
+
+  <section>
+    <h2>This run</h2>
+    <div class="words" id="words"></div>
+  </section>
+  <section>
+    <button class="ghost" id="showStems">Show the stems</button>
+    <table id="ref" hidden></table>
+  </section>
+</div>
+
+<script>
+// Each verb is one "word": any person (je, tu, nous…) of it counts for that verb.
+const VERBS = [
+  {inf:'avoir', stem:'aur', en:'have'},
+  {inf:'être', stem:'ser', en:'be'},
+  {inf:'aller', stem:'ir', en:'go'},
+  {inf:'faire', stem:'fer', en:'do / make'},
+  {inf:'pouvoir', stem:'pourr', en:'be able to'},
+  {inf:'savoir', stem:'saur', en:'know'},
+  {inf:'vouloir', stem:'voudr', en:'want'},
+  {inf:'venir', stem:'viendr', en:'come'},
+  {inf:'tenir', stem:'tiendr', en:'hold'},
+  {inf:'voir', stem:'verr', en:'see'},
+  {inf:'devoir', stem:'devr', en:'have to'},
+  {inf:'recevoir', stem:'recevr', en:'receive'},
+  {inf:'envoyer', stem:'enverr', en:'send'},
+  {inf:'courir', stem:'courr', en:'run'},
+  {inf:'mourir', stem:'mourr', en:'die'},
+  {inf:'travailler', stem:'travailler', en:'work'},
+  {inf:'partir', stem:'partir', en:'leave'},
+  {inf:'attendre', stem:'attendr', en:'wait'},
+];
+const PERSONS = [
+  {p:'je', end:'ai', en:'I'},
+  {p:'tu', end:'as', en:'you'},
+  {p:'il', end:'a', en:'he'},
+  {p:'elle', end:'a', en:'she'},
+  {p:'nous', end:'ons', en:'we'},
+  {p:'vous', end:'ez', en:'you (pl.)'},
+  {p:'ils', end:'ont', en:'they'},
+  {p:'elles', end:'ont', en:'they'},
+];
+const $ = id => document.getElementById(id);
+const vowel = s => /^[aeiouéèêh]/.test(s);
+const norm = s => s.toLowerCase().replace(/[’`]/g, "'").replace(/\s+/g, ' ').trim();
+
+let done = new Set();   // verbs right in the current run
+let missed = new Set(); // verbs missed at some point (asked sooner next run)
+let streak = 0, best = 0, runs = 1, current = null, waiting = false, last = null;
+
+function pick() {
+  const left = VERBS.filter(v => !done.has(v.inf) && v.inf !== last);
+  const pool = left.length ? left : VERBS.filter(v => !done.has(v.inf));
+  const weak = pool.filter(v => missed.has(v.inf));
+  const from = weak.length && Math.random() < 0.5 ? weak : pool;
+  return from[Math.floor(Math.random() * from.length)];
+}
+
+function ask() {
+  const v = pick(), per = PERSONS[Math.floor(Math.random() * PERSONS.length)];
+  const form = v.stem + per.end;
+  const pron = per.p === 'je' && vowel(form) ? "j'" : per.p + ' ';
+  current = {v, per, form, pron};
+  last = v.inf;
+  $('prompt').innerHTML = `${per.p} <em>(${v.inf})</em>`;
+  $('eng').textContent = `${per.en} will ${v.en}`;
+  $('pron').textContent = pron.trim();
+  $('answer').value = '';
+  $('answer').focus();
+  $('go').textContent = 'Check';
+  waiting = false;
+}
+
+function check() {
+  const a = norm($('answer').value);
+  if (!a) return;
+  const {v, form, pron} = current;
+  const full = norm(pron + form);
+  const ok = a === form || a === full || a === norm(pron.trim() + ' ' + form);
+  if (ok) {
+    done.add(v.inf); streak++;
+    best = Math.max(best, streak);
+    $('fb').className = 'fb good';
+    $('fb').innerHTML = `✓ <b>${pron}${form}</b>`;
+    render();
+    if (done.size === VERBS.length) return finish();
+    setTimeout(ask, 650);
+    waiting = true;
+  } else {
+    missed.add(v.inf);
+    $('fb').className = 'fb bad';
+    $('fb').innerHTML = `✗ It's <b>${pron}${form}</b> (stem <b>${v.stem}-</b>). You wrote “${$('answer').value}”. The run starts again.`;
+    done = new Set(); streak = 0; runs++;
+    render();
+    $('go').textContent = 'Next';
+    waiting = true;
+  }
+}
+
+function render() {
+  $('streak').textContent = streak;
+  $('best').textContent = best;
+  $('runs').textContent = runs;
+  $('bar').style.width = (100 * done.size / VERBS.length) + '%';
+  $('words').innerHTML = VERBS.map(v =>
+    `<span class="${done.has(v.inf) ? 'done' : missed.has(v.inf) ? 'miss' : ''}">${v.inf}</span>`).join('');
+}
+
+function stemRows() {
+  return VERBS.map(v => `<tr><td>${v.inf}</td><td>${v.stem}-</td><td>I will ${v.en}</td></tr>`).join('');
+}
+
+function finish() {
+  $('quiz').hidden = true;
+  $('win').hidden = false;
+  $('winText').textContent = `All ${VERBS.length} verbs right in a row, on run ${runs}.`;
+  $('stemTable').innerHTML = stemRows();
+}
+
+$('form').addEventListener('submit', e => {
+  e.preventDefault();
+  if (waiting) { if ($('go').textContent === 'Next') ask(); return; }
+  check();
+});
+document.querySelectorAll('.keys button').forEach(b => b.addEventListener('click', () => {
+  const i = $('answer'), s = i.selectionStart;
+  i.value = i.value.slice(0, s) + b.textContent + i.value.slice(i.selectionEnd);
+  i.focus(); i.setSelectionRange(s + 1, s + 1);
+}));
+$('showStems').addEventListener('click', () => {
+  const r = $('ref');
+  r.hidden = !r.hidden;
+  r.innerHTML = stemRows();
+  $('showStems').textContent = r.hidden ? 'Show the stems' : 'Hide the stems';
+});
+$('again').addEventListener('click', () => {
+  done = new Set(); missed = new Set(); streak = 0; best = 0; runs = 1;
+  $('win').hidden = true; $('quiz').hidden = false; $('fb').textContent = '';
+  render(); ask();
+});
+render(); ask();
+</script>
+</body>
+</html>
